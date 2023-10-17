@@ -1,0 +1,30 @@
+version: "3.9"
+services:
+  app:
+    image: prod-service:local
+    ports:
+      - "8080:8080"
+    container_name: ps-app
+    depends_on:
+      - postgres
+    networks:
+      - ps
+  postgres:
+    image: postgres:14.8-alpine3.18
+    environment:
+      POSTGRES_DB: "habrdb"
+      POSTGRES_USER: "habrpguser"
+      POSTGRES_PASSWORD: "pgpwd4habr"
+      PGDATA: "/var/lib/postgresql/data/pgdata"
+    volumes:
+      - ../2. Init Database:/docker-entrypoint-initdb.d
+      - habrdb-data:/var/lib/postgresql/data
+    networks:
+      - ps
+    ports:
+      - "5432:5432"
+volumes:
+  habrdb-data:
+
+networks:
+  ps:
